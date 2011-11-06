@@ -1,0 +1,4 @@
+Escribir dos programas tales que uno se comportará como un gestor de una base de datos compuesta por una tabla de personas (char(61) nombre, char(120) direccion,char(13) telefono);
+
+El otro programa es un cliente de la base de datos. Este cliente puede leer el contenido de la base de datos y también puede agregar nuevos registros. Se deberá utilizar cola de mensajes para comunicar el programa cliente con el gestor de la base.
+
