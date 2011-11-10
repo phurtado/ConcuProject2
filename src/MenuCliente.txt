@@ -1,0 +1,10 @@
+Gestor de Base de Datos
+
+Ingrese la tarea a realizar:
+
+1. Conectarse a la Base de Datos.
+2. Desconectarse de la Base de Datos.
+3. Ver Base de Datos.
+4. Leer un registro de la Base de Datos.
+5. Agregar un registro a la Base de Datos.
+6. Salir de la Aplicación.
