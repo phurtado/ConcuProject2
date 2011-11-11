@@ -42,7 +42,7 @@ BaseDeDatos::BaseDeDatos(char* path) {
 		fseek(fd, 0, SEEK_CUR);
 
 		int bytesLeidos = 0;
-		do {
+		while(bytesLeidos != sizeFile) {
 			// Leo un registro
 			fread(buffer, sizeof(aux.nombre), 1, fd);
 			memcpy(aux.nombre, buffer, sizeof(aux.nombre));
@@ -56,7 +56,7 @@ BaseDeDatos::BaseDeDatos(char* path) {
 			// Incremento la cantidad de registros en la BD en memoria
 			this->cantRegistros++;
 			bytesLeidos += sizeof(aux);
-		} while(bytesLeidos != sizeFile);
+		}
 	}
 	else {
 		// Creo el archivo donde se va a almacenar la BD.

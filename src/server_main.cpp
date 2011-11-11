@@ -14,7 +14,6 @@ using namespace std;
 int main() {
 	// Variables del main
 	Servidor servidor;
-
 	// Primero registro el handler de SIGINT
 	SIGINT_Handler sigint_handler;
 	// Luego registro el handler
@@ -23,7 +22,7 @@ int main() {
 	// El servidor escucha mientras no se reciba la señal SIGINT
 	cout << "Servidor escuchando peticiones del cliente" << endl;
 	while (sigint_handler.getGracefulQuit() == 0) {
-		cout << "lala";
+		servidor.escucharMensaje();
 	}
 
 	// Salí del while, se recibió SIGNIT. Cierro el servidor.

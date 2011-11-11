@@ -6,8 +6,10 @@
 #include <unistd.h>
 
 // Protocolo de comunicación
-typedef enum {ALTA = 561, BAJA = 562, GETBD = 563,
-							LEERRG = 564, ADDRG = 565 } TCOM;
+typedef enum {CON = 0, DESCON = 1, LEERRG = 2,
+							ALTARG = 3, MODRG = 4 , BAJARG = 5,
+							CONOK = 6, DESCONOK = 7, LEERRGOK = 8,
+							ALTARGOK = 9, MODRGOK = 10, BAJARGOK = 11} TCOM;
 
 // Tamaño de las memorias compartidas donde se va a almacenar la BD
 #define CANTREG 1000

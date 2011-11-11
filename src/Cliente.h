@@ -4,12 +4,19 @@
 #include "Cola.h"
 #include "Mensaje.h"
 #include "common.h"
+#include <sys/types.h>
+#include <unistd.h>
+#include <iostream>
+using namespace std;
 
 class Cliente {
 
 private:
+	// Cola de mensajes para establecer la comunicación con el Servidor.
 	Cola<Mensaje>* cola;
 	
+
+
 public:
 
 	/* Pre:
@@ -20,16 +27,6 @@ public:
 	/* Post:
  	 */
 	~Cliente();
-
-	/* Pre:
- 	 * Post:
- 	 */
-	void conexionServidor();
-
-	/* Pre:
- 	 * Post:
- 	 */
-	void desconexionServidor();
 };
 
 #endif

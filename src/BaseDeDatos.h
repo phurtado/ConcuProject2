@@ -25,12 +25,6 @@ private:
 	// Memoria compartida donde se almacenará la BD.
 	MemoriaCompartida<Registro>* sharedMem;
 
-	/* Pre: Número de registro debe ser válido
-	 * Post: Retorna el número de elemento que está asociado con el número
-	 * de registro ingresado. En caso de que numReg no sea válido,retorna -1.
-	 */
-	int regToEl(int numReg) const;
-
 public:
 
 	/* Pre: El path debe ser válido.
@@ -77,6 +71,16 @@ public:
 	 * Post: Imprime la base de datos.
 	 */
 	void imprimirBD() const;
+
+
+private:
+
+	/* Pre: Número de registro debe ser válido
+	 * Post: Retorna el número de elemento que está asociado con el número
+	 * de registro ingresado. En caso de que numReg no sea válido,retorna -1.
+	 */
+	int regToEl(int numReg) const;
+
 };
 
 #endif
