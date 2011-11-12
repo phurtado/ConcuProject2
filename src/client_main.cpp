@@ -45,10 +45,10 @@ int main() {
 				cliente.agregarRegistro();
 				break;
 			case 3:
-				// TODO cliente.modificarRegistro();
+				cliente.modificarRegistro();
 				break;
 			case 4:
-				// TODO cliente.eliminarRegistro();
+				cliente.eliminarRegistro();
 				break;
 			case 5:
 				// El cliente desea salir, pongo sigue en false

@@ -4,6 +4,6 @@ Ingrese la tarea a realizar:
 
 1. Leer un registro de la Base de Datos.
 2. Agregar un registro a la Base de Datos.
-3. Eliminar un registro de la Base de Datos.
-4. Modificar un registro de la Base de Datos.
+3. Modificar un registro de la Base de Datos.
+4. Eliminar un registro de la Base de Datos.
 5. Salir de la Aplicación.

@@ -80,7 +80,6 @@ void Servidor::procesarDesconexion(Mensaje & msj) {
 		this->listaClientesOn->erase(it);
 		// Reescribo el mensaje a enviarle al cliente
 		cout << "Cliente " << msj.mtype << ": Desconexión exitosa" << endl;
-		cout << "Cantidad de elementos en listaClientesOn: " << this->listaClientesOn->size() << endl;
 		msj.comando = DESCONOK;
 	}
 	else {
@@ -109,6 +108,7 @@ void Servidor::procesarLectura(Mensaje & msj) {
 	}
 	else {
 		// El cliente no está conectado al servidor. Envío un mensaje de error.
+		cout << "Cliente " << msj.mtype << ": Cliente no conectado al servidor" << endl;
 		msj.comando = ERROR;
 	}
 }
@@ -129,14 +129,53 @@ void Servidor::procesarAlta(Mensaje & msj) {
 	}
 	else {
 		// El cliente no está conectado al servidor. Le envío un mensaje de error.
+		cout << "Cliente " << msj.mtype << ": Cliente no conectado al servidor" << endl;
 		msj.comando = ERROR;
 	}
 }
 
 void Servidor::procesarMod(Mensaje & msj) {
+	// Primero verifico que el cliente esté conectado a la BD
+	if (this->buscarCliente(msj.mtype) != this->listaClientesOn->end()) {
+		// Encontré al cliente, realizo la modificación
+		if (this->bd->modificarRegistro(msj.reg, msj.numReg) == -1) {
+			// El número de registro no es válido, retorno un mensaje de error.
+			cout << "Cliente " << msj.mtype << ": Modificación fallida" << endl;
+			msj.comando = ERROR;
+		}
+		else {
+			// Se pudo realizar la modificación correctamente
+			cout << "Cliente " << msj.mtype << ": Modificación exitosa" << endl;
+			msj.comando = MODRGOK;
+		}
+	}
+	else {
+		// El cliente no está conectado al servidor. Le envío un mensaje de error.
+		cout << "Cliente " << msj.mtype << ": Cliente no se encuentra en el servidor" << endl;
+		msj.comando = ERROR;
+	}
 }
 
 void Servidor::procesarBaja(Mensaje & msj) {
+	// Primero verifico que el cliente esté conectado a la BD
+	if (this->buscarCliente(msj.mtype) != this->listaClientesOn->end()) {
+		// Encontré al cliente, realizo la modificación
+		if (this->bd->eliminarRegistro(msj.numReg) == -1) {
+			// El número de registro no es válido, retorno un mensaje de error.
+			cout << "Cliente " << msj.mtype << ": Baja fallida" << endl;
+			msj.comando = ERROR;
+		}
+		else {
+			// Se pudo realizar la modificación correctamente
+			cout << "Cliente " << msj.mtype << ": Baja exitosa" << endl;
+			msj.comando = BAJARGOK;
+		}
+	}
+	else {
+		// El cliente no está conectado al servidor. Le envío un mensaje de error.
+		cout << "Cliente " << msj.mtype << ": Cliente no se encuentra en el servidor" << endl;
+		msj.comando = ERROR;
+	}
 }
 
 list<int>::iterator Servidor::buscarCliente(int pid) {
