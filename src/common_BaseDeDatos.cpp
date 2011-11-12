@@ -39,7 +39,7 @@ BaseDeDatos::BaseDeDatos(char* path) {
 		// Obtengo la longitud del archivo en el que está la BD
 		fseek(fd, 0, SEEK_END);
 		int sizeFile = ftell(fd);
-		fseek(fd, 0, SEEK_CUR);
+		fseek(fd, 0, SEEK_SET);
 
 		int bytesLeidos = 0;
 		while(bytesLeidos != sizeFile) {

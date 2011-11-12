@@ -4,7 +4,7 @@ Servidor::Servidor() {
 	// Creo la Cola de Mensajes	 
 	this->cola = new Cola<Mensaje>((char*) PATHCOLA, CHARCOLA);
 	// Creo la Base de Datos
-	// this->bd = new BaseDeDatos((char*) PATHBD);
+	this->bd = new BaseDeDatos((char*) PATHBD);
 
 	// Creo la lista.
 	this->listaClientesOn = new list<int>;
@@ -26,7 +26,7 @@ Servidor::~Servidor() {
 	// Destruyo la cola
 	delete this->cola;
 	// Destruyo la BD
-	// delete this->bd;
+	delete this->bd;
 }
 
 void Servidor::procesarMensaje(Mensaje & msj) {
@@ -60,10 +60,14 @@ void Servidor::procesarConexion(Mensaje & msj) {
 	// Verifico que el cliente no esté conectado al servidor
 	if (this->buscarCliente(msj.mtype) == this->listaClientesOn->end()) {
 		// El cliente no está conectado. Primero lo agrego  a la lista
-		this->listaClientesOn->push_back(msj.mtype);
+		this->listaClientesOn->push_front(msj.mtype);
 		// Luego reescribo el mensaje
-		cout << "Cliente " << msj.mtype << ": Procesando petición de Conexión" << endl;
+		cout << "Cliente " << msj.mtype << ": Conexión exitosa" << endl;
 		msj.comando = CONOK;
+	} else {
+		// El cliente está conectado, no le puedo dar el alta. Envío un
+		// mensaje de error.
+		msj.comando = ERROR;
 	}
 }
 
@@ -75,15 +79,58 @@ void Servidor::procesarDesconexion(Mensaje & msj) {
 		// Encontre al cliente, lo borro de la lista
 		this->listaClientesOn->erase(it);
 		// Reescribo el mensaje a enviarle al cliente
-		cout << "Cliente " << msj.mtype << ": Procesando petición de Desconexión" << endl;
+		cout << "Cliente " << msj.mtype << ": Desconexión exitosa" << endl;
+		cout << "Cantidad de elementos en listaClientesOn: " << this->listaClientesOn->size() << endl;
 		msj.comando = DESCONOK;
+	}
+	else {
+		// No encontré al cliente, mando un mensaje de error
+		msj.comando = ERROR;
 	}
 }
 
 void Servidor::procesarLectura(Mensaje & msj) {
+	// Primero verifico que el cliente esté conectado a la BD
+	if (this->buscarCliente(msj.mtype) != this->listaClientesOn->end()) {
+		// Cliente válido. Leo el registro de la BD.
+		Registro reg;
+		if (this->bd->leerRegistro(reg, msj.numReg) == -1) {
+			// El número de registro no era válido
+			msj.comando = ERROR;
+			cout << "Cliente " << msj.mtype << ": Lectura fallida" << endl;
+		}
+		else {
+			// Número de registro válido
+			msj.comando = LEERRGOK;
+			// Agrego el registro al mensaje
+			msj.reg = reg;
+			cout << "Cliente " << msj.mtype << ": Lectura exitosa" << endl;
+		}
+	}
+	else {
+		// El cliente no está conectado al servidor. Envío un mensaje de error.
+		msj.comando = ERROR;
+	}
 }
 
 void Servidor::procesarAlta(Mensaje & msj) {
+	// Primero verifico que el cliente esté conectado a la BD
+	if (this->buscarCliente(msj.mtype) != this->listaClientesOn->end()) {
+		// Cliente válido, agrego el registro a la BD
+
+		// TODO Dado que el registro viene con formato válido, se puede
+		// asumir que el alta siempre va a ser válida.
+		// HIPOTESIS: La BD entra en la Memoria Compartida (ratificada por Julia)
+		this->bd->agregarRegistro(msj.reg);
+
+		cout << "Cliente " << msj.mtype << ": Alta exitosa" << endl;
+		// Envío respuesta exitosa al cliente
+		msj.comando = ALTARGOK;
+	}
+	else {
+		// El cliente no está conectado al servidor. Le envío un mensaje de error.
+		msj.comando = ERROR;
+	}
 }
 
 void Servidor::procesarMod(Mensaje & msj) {

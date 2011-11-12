@@ -9,14 +9,15 @@
 typedef enum {CON = 0, DESCON = 1, LEERRG = 2,
 							ALTARG = 3, MODRG = 4 , BAJARG = 5,
 							CONOK = 6, DESCONOK = 7, LEERRGOK = 8,
-							ALTARGOK = 9, MODRGOK = 10, BAJARGOK = 11} TCOM;
+							ALTARGOK = 9, MODRGOK = 10, BAJARGOK = 11,
+							ERROR = 12} TCOM;
 
 // Tamaño de las memorias compartidas donde se va a almacenar la BD
 #define CANTREG 1000
 #define TAMSHMEM sizeof(Registro) * CANTREG
 
 // Datos con los cuales se va a crear las Memorias Compartidas
-#define PATHSHMEM "main.cpp"
+#define PATHSHMEM "server_main.cpp"
 
 // Datos con los cuales se va a crear la Cola de Mensajes
 #define PATHCOLA "MenuCliente.txt"

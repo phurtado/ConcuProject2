@@ -9,6 +9,8 @@ typedef struct {
 	long mtype;
 	// Delimita que acción quiere realizar el cliente.
 	TCOM comando;
+	// Registro de la BD que será leído/mod/borrado
+	int numReg;
 	// Un registro de la BD
 	Registro reg;
 } Mensaje;
