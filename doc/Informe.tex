@@ -1,0 +1,292 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[spanish]{babel} % Paquetes de idioma
+\usepackage[latin1]{inputenc} % Paquetes de idioma
+\usepackage{graphicx} % Paquete para ingresar gráficos
+\usepackage{grffile}
+\usepackage{hyperref}
+\usepackage{fancybox}
+\usepackage{amsmath}
+\usepackage{listings}
+
+% Encabezado y Pié de página
+\input{EncabezadoyPie.tex}
+% Carátula del Trabajo
+\title{ \input{Portada.tex} }
+
+\begin{document}
+	\maketitle % Hace que el título anterior sea el principal del documento
+	\newpage
+
+	\tableofcontents % Esta línea genera un indice a partir de las secciones y subsecciones creadas en el documento
+	\newpage
+
+	\section{Introducci\'on}
+		El presente trabajo consiste en el desarrollo de una aplicaci\'on {\it concurrente}. El objetivo de la misma
+		es permitir el almacenamiento de datos centralizado y la posterior recuperaci\'on de los clientes. \\
+		\indent Debido a que la materia apunta a obtener conocimientos sobre los mecanismos de concurrencia vistos hasta el momento en la c\'atedra, 
+    el proyecto debe correr en una \'unica computadora y funcionar bajo un ambiente \emph{Unix/Linux} dado que los mecanismos vistos son los 
+    implementados por \emph{System V}. \\
+		\indent La implementaci\'on de la aplicaci\'on consiste en un esquema \emph{Cliente-Servidor}. El servidor se encuentra escuchando peticiones
+		del cliente. Los clientes deben conectarse al servidor, y luego de esto pueden utilizar los servicios provistos por el mismo.
+		\vspace{0.5cm}
+
+	\section{Modo de Operaci\'on}
+
+		\subsection {C\'omo compilar y correr la aplicaci\'on}
+			Para poder correr la aplicaci\'on correctamente, lo primero que debe realizarse es compilar el programa. Para esto se ha provisto de un
+			\emph{Makefile} que se encagar\'a de realizar el proceso de compilaci\'on. \\
+			\indent Para compilar la aplicaci\'on servidor se debe ingresar el siguiente comando:
+			\begin{verbatim}
+				$ make server
+			\end{verbatim}
+			\indent Para compilar la aplicaci\'on cliente se debe ingresar el siguiente comando:
+			\begin{verbatim}
+				$ make client
+			\end{verbatim}
+			\indent En el caso de que desee compilar todas las aplicaciones juntas puede hacerlo por medio de alguno de los siguientes comandos:
+			\begin{verbatim}
+				$ make server client 
+				$ make all
+			\end{verbatim}
+
+			\subsection{Casos de Uso}
+
+			Como bien se dijo, la aplicaci\'on est\'a compuesta por un \emph{Servidor} que escucha peticiones y \emph{Clientes} que realizan las mismas. 
+			De esta forma, el \emph{Servidor} es un proceso que no tiene interacci\'on con el usuario. En cambio, el \emph{Cliente} si tiene interacci\'on
+			con el usuario. La aplicaci\'on \emph{Cliente} despliega un men\'u con las tareas que puede realizar el mismo. A continuaci\'on se 
+			explica el modo de uso de cada una de las opciones del men\'u: 
+
+			\begin{itemize}
+                                
+                \item \textbf{1-Leer un Registro:} Mediante esta opci\'on, el cliente le indica al servidor qu/'e registro desea recuperar de la base de datos.
+
+                Precondici\'on: El servidor se encuentra corriendo. 
+                \begin{itemize}
+                    \item El usuario solicita la lectura de un registro. 
+                    \item El programa cliente pregunta el n\'umero de registro deseado. 
+		    \item El usuario ingresa el n\'umero de registro. 
+                    \item El programa cliente lo env\'ia al servidor.
+                    \item El servidor recibe el pedido, valida el n\'umero pedido y responde enviando el registro solicitado o error (E1). 
+		    \item El cliente recibe la respuesta y muestra el registro al usuario.
+                \end{itemize}
+                
+                E1) El n\'umero de registro es inv\'alido. Corresponde a un registro inexistente en la base de datos. 
+                    \begin{itemize}
+                        \item El programa cliente muestra un mensaje de error y vuelve al men\'u de selecci\'on de operaci\'on.
+				    \end{itemize}
+                
+                \item \textbf{2-Agregar un registro a la Base de Datos:} Mediante esta opci\'on, el cliente le indica al servidor que desea agregar un registro. 
+                Precondici\'on: El servidor se encuentra corriendo.
+                \begin{itemize}
+				\item El usuario solicita agregar un registro a la base de datos. 
+				\item El programa cliente pregunta el campo nombre del nuevo registro. 
+				\item El usuario ingresa el nombre.
+				\item El programa cliente valida el tama~no del nombre (E1).
+				\item El programa cliente pregunta el campo direcci\'on del nuevo registro. 
+				\item El usuario ingresa la direcci\'on.
+				\item El cliente valida el tama~no de la direcci\'on (E1).
+				\item El programa cliente pregunta el campo itel\'efono del nuevo registro. 
+				\item El usuario ingresa el tel\'efono. 
+			\item El cliente valida el tama~no del tel\'efono. (E1).
+			\item El cliente env\'ia el registro a agregar al servidor.
+
+			\item El servidor recibe el mensaje, agrega el registro a la base de datos, y env\'ia al cliente la respuesta. 
+		    \item El cliente recibe el mensaje y notifica al usuario del \'exito de la operaci\'on.
+			\item El cliente muestra el men\'u principal.
+                \end{itemize}
+
+                E1) El tama\~no del campo es inv\'alido. 
+                \begin{itemize}
+                    \item El programa cliente muestra un mensaje de error y solicita nuevamente el ingreso del valor del campo. 
+			\item El usuario debe ingresar el valor del campo hasta que la validaci\'on sea correcta.
+                \end{itemize}
+                
+                \item \textbf{3-Modificar un registro:} Mediante esta opci\'on, se permite la modificaci\'on de un registro de la base de datos. 
+				
+                \begin{itemize}
+			\item El usuario solicita la modificaci\'on de un registro. 
+			\item El cliente pregunta el n\'umero de registro a modificar.
+			\item El usuario ingresa el n\'umero.
+			\item El cliente pregunta el valor del campo nombre del registro. 
+			\item El usuario ingresa el nombre.
+			\item El programa cliente valida el tama\~no del nombre (E1).
+			\item El cliente pregunta el valor del campo direcci\'on del registro 
+			\item El usuario ingresa la direcci\'on.
+			\item El programa cliente valida eltama~no del campo direcci\'on (E1).
+			\item El cliente pregunta el valor del campo tel\'efono del registro 
+			\item El usuario ingresa el tel\'efono. 
+			\item El programa cliente valida el tama~no del campo tel\'efono (E1).
+			\item El cliente notifica al usuario el resultado de la operaci\'on.
+			\item El cliente muestra el men\'u principal.
+
+			E1) El tama~no del campo es inv\'alido. 
+			\begin{itemize}
+                    \item El programa cliente muestra un mensaje de error y solicita nuevamente el ingreso del valor del campo. 
+			\item El usuario debe ingresar el valor del campo hasta que la validaci\'on sea correcta.
+			\end{itemize}
+		\end{itemize}
+                \item \textbf{4-Eliminar un registro de la Base de Datos:} Mediante esta opci\'on, el cliente puede eliminar un registro de la base de datos. 
+                   
+                Precondici\'on: El servidor se encuentra corriendo. 
+				
+                \begin{itemize}
+                   \item El usuario solicita al programa cliente la eliminaci\'on de un registro. 
+                   \item El programa cliente solicita el n\'umero de registro que se desea eliminar. 
+                  \item El programa cliente envía la petici\'on de eliminaci\'on al servidor. 
+                   \item El servidor realiza la petici\'on y env\'ia el resultado al cliente. 
+			\item El cliente recibe la respuesta del servidor y la muestra al usuario (E1).
+			\item El cliente regresa al men\'u principal.
+                \end{itemize}
+               E1) El n\'umero de registro ingresado no existe. 
+		\begin{itemize}
+			\item El cliente notifica el error al usuario.
+			\item El cliente regresa al men\'u principal.
+		\end{itemize}
+		\item \textbf{5-Salir de la Aplicaci\'on:} Mediante esta opci\'on, el cliente abandona la aplicaci\'on.
+
+                Precondici\'on: El servidor se encuentra corriendo. 
+                
+                \begin{itemize}
+                    \item El usuario solicita salir del programa cliente.
+                    \item Finaliza el programa cliente.
+                \end{itemize}
+			\end{itemize}
+
+	\section{An\'alisis de la Soluci\'on}
+		\subsection{Divisi\'on de la Aplicaci\'on en Procesos}
+			Debido a la naturaleza de la soluci\'on adoptada, se pueden distinguir f\'acilmente los siguientes procesos:
+
+			\begin{itemize}
+				\item \textbf{Servidor:} Este proceso se encarga de escuchar las peticiones los clientes. Mientras ning\'un usuario le env\'ie ning\'un 
+				mensaje, el mismo se bloquea. Cuando un cliente le env\'ia alg\'un mensaje, despierta al mismo y este se encarga de responderle al 
+				usuario.
+				\item \textbf{Cliente:} Al abrir un usuario una aplicaci\'on Cliente, se crea un nuevo proceso el cual puede comunicarse con el servidor.
+				El Cliente env\'ia peticiones al servidor esperando una respuesta del mismo.
+			\end{itemize}
+\subsection{Comunicaci\'on entre Procesos} A continuaci\'on se detalla como es la comunicaci\'on entre los procesos seg\'un los casos de uso: \begin{itemize}
+				\item \textbf{Leer Registro de la Base de Datos:}	
+					\begin{itemize} \item El servidor y un cliente se comunican.
+						\item El cliente env\'ia un mensaje al servidor para leer un registro. 
+						\item El servidor recibe el mensaje y contesta al cliente con el registro solicitado o un error.
+					\end{itemize}
+				\item \textbf{Agregar Registro al Servidor:} 
+					\begin{itemize}
+						\item El servidor y un cliente se comunican.
+						\item El cliente env\'ia un mensaje al servidor para agregar un registro a la base de datos, junto con el registro a agregar. 
+						\item El servidor recibe el mensaje y contesta con el resultado de la operaci\'on. 
+					\end{itemize}
+				\item \textbf{Modificar un Registro:}
+					\begin{itemize}
+						\item El servidor y un cliente se comunican.
+						\item El cliente env\'ia un mensaje al servidor pidiendomodificar un registro, con el registro modificado. 
+						\item El servidor recibe el mensaje y contesta al cliente con el resultado de la operaci\'on. 
+						 \end{itemize} 
+\item \textbf{Eliminar un registro de la base de datos:} \begin{itemize}
+						\item El servidor y un cliente se comunican.
+						\item El cliente env\'ia un mensaje al servidor pidi\'endo la eliminaci\'on de un registro de la base de datos junto con el n\'umero de registro a eliminar.
+						\item El servidor le responde con el resultado de la operaci\'on. 
+					\end{itemize}
+			\end{itemize}
+
+%	\subsection{Problemas Conocidos de Concurrencia en el Trabajo}
+%	Respecto a las transferencias, se podr\'ia comparar con el 
+%	problema de \emph{Consumidor Productor}, con la excepci\'on de que habr\'ia un solo consumidor y un solo productor. \\
+%	Sin embargo, se tienen los mismos problemas que en el modelo, ya que el lector debe esperar a que el escritor
+%	 ``produzca'' 
+%	y el escritor debe esperar a que el lector ``consuma''.
+%	
+%	Respecto a la comunicaci\'on entre cliente y servidor, la comunicaci\'on tambi\'en se parece al problema de \emph
+%	{Cosumidor Productor},
+%	 con la
+%	 excepci\'on de que puede haber muchos productores y un solo consumidor. En el caso de las respuestas del servidor
+%	 a cada
+%	 cliente, solo hay un productor y un consumidor.\\
+%	En este caso, el lector siempre debe esperar a que el escritor ``produzca''.
+%	
+%	Respecto a la lectura del archivo para la transferencia, se podr\'ia comparar con el modelo de \emph{Lectores
+%	 Escritores}, aunque en la aplicaci\'on se pueden tener varios lectores para el archivo a transferir
+%	y un solo escritor para el archivo nuevo. \\Aunque, an\'alogamente 
+%	al caso anterior, se pueden presentar los problemas caracter\'isticos de este modelo, es decir, podr\'ia darse el caso
+%	de que se desee modificar de forma externa al archivo de lectura mientras est\'a siendo leido. Para el archivo de 
+%	escritura, 
+%	podr\'ia ser que se quiera leer o escribir el archivo mientras se est\'a escribiendo.
+%	
+%	\subsection{Mecanismos de Concurrencia Utilizados}
+%		A continuaci\'on se exhiben los mecanismos de concurrencia utilizados en la comunicaci\'on entre los procesos:
+%		\subsubsection{Env\'io de Mensajes entre Servidor y Cliente}
+%			Los clientes se comunican con el servidor enviando mensajes con la tarea que desean realizar. Dado que el servidor 
+%			debe responder al cliente sobre el estado de la operaci\'on realizada, los mecanismos posibles para establecer esta 
+%			comunicaci\'on podr\'ian ser \emph{Fifos} o \emph{Memoria Compartida}. No se podr\'ia haber utilizado \emph{pipes} dado 
+%			que el cliente deber\'ia ser hijo del servidor, cosa que no ocurre. \\
+%			\indent Se decidi\'o utilizar \emph{Fifos} para establecer esta comunicaci\'on dado que los mensajes que env\'ia el cliente
+%			tienen distintos tama\~nos seg\'un la tarea a realizar, y en algunos casos como a la hora de compartir archivos, var\'ian 
+%			seg\'un la longitud del path del archivo compartido. \\ \\
+%			\indent De esta forma, el servidor posee una \emph{Fifo} para recibir mensajes del cliente y cada cliente posee una \emph{Fifo}
+%			para escribir mensajes al servidor. Con esta implementaci\'on surge un inconveniente: Una \emph{Fifo} es un mecanismo de 
+%			concurrencia unidireccional que asegura el sincronismo entre procesos. Sin embargo, dado que todos los clientes conectados poseen
+%			la \emph{Fifo} de lectura del servidor abierta, ya no existe sincronismo entre los procesos.  \\
+%			\indent Para solucionar este problema, se agrega un sem\'aforo. Este sem\'aforo se encarga de bloquear al servidor mientras que no 
+%			haya alg\'un cliente que intente escribir alg\'un mensaje. El cliente que desea escribir un mensaje incrementa el sem\'aforo y 
+%			despierta al servidor para procesar el mensaje. \\ \\
+%			\indent Los mensajes que el servidor env\'ia a cada cliente son entregados tambi\'en por medio de \emph{Fifos}. En este caso, el 
+%			servidor posee una \emph{Fifo} por cada cliente que se encuentre conectado, por lo cual no existen problemas de sincronismo dado que
+%			este mecanismo s\'olo es compartido entre el servidor y un cliente particular.
+%	
+%			\subsubsection{Transferencia de Archivos}
+%			Para realizar la transferencia de archivos se pod\'ia elegir nuevamente entre \emph{Fifos} y \emph{Memoria Compartida}. En este caso,
+%			se eligi\'o el mecanismo de concurrencia de \emph{Memoria Compartida}. El motivo de esta elecci\'on es que de esta forma el archivo
+%			compartido se escribe en memoria y no en un archivo en disco como se lo hace utilizando \emph{Fifos}. De esta forma, se mejora el 
+%			rendimiento de la aplicaci\'on. \\
+%			\indent Dado que el tama\~no del archivo puede llegar a ser muy grande, el archivo se escribe de forma particionada en la 
+%			\emph{Memoria Compartida}. \\
+%			\indent Para asegurar la sincronizaci\'on entre escrituras y lecturas, se emplean dos sem\'aforos. Un sem\'aforo bloquea 
+%			la lectura de la \emph{Memoria}. Esto se requiere en caso de que otro proceso se encuentre escribiendo la misma. Al terminar
+%			de escribir, el proceso desbloquea la \emph{Memoria Compartida} y el proceso que deseaba realizar una lectura se libera para
+%			poder completarla. El otro sem\'aforo bloquea la escritura de la \emph{Memoria}. Esto se requiere en caso de que un proceso
+%			se encuentre leyendo la memoria a la hora de que otro quiera escribirla. En este caso, el proceso que escribe se suspende 
+%			hasta que el proceso que lee incremente el sem\'aforo, lo cual se da cuando termina de leer.
+%			
+		% Esto no iria porque no usamos Locks sobre el archivo de Log
+		%	\subsubsection{Escritura sobre el Logger} 
+		% 		Al ejecutarse la aplicaci\'on en \emph{Modo Debug}, muchos procesos podr\'ian escribir el archivo al mismo tiempo. Esto
+		%	puede provocar que los mensajes se mezclen entre s\'i y el archivo de log quede ilegible.
+		%	Para solucionar este inconveniente, se agrega un lock de escritura sobre el archivo de log cada vez que un proceso logea
+		%	alg\'un mensaje. El mismo se retira al terminarse la escritura sobre el mismo, dejando que cualquier otro proceso pueda 
+		%	escribir otro mensaje.
+
+%	\section{Diagramas}
+%		
+%		\subsection{Diagramas de Estado}
+%			\begin{figure}[!htpb]
+%				\centering
+%				\includegraphics[width=11cm]{DEstadoVidaCliente.jpeg}
+%				\caption{Diagrama de Estado del Proceso Cliente} \label{Img001}
+%			\end{figure}
+%	
+%			\begin{figure}[!htpb]
+%				\centering
+%				\includegraphics[width=11cm]{DEstadoVidaServidor.jpeg}
+%				\caption{Diagrama de Estado del Proceso Servidor} \label{Img002}
+%			\end{figure}
+%	
+%			\begin{figure}[!htpb]
+%				\centering
+%				\includegraphics[width=11cm]{DEstadoVidaTransferidor.jpeg}
+%				\caption{Diagrama de Estado del Proceso Transferidor}
+%			\end{figure}
+%	
+%		\newpage
+%		\subsection{Diagrama de Clases}
+%			\begin{figure}[!htpb]
+%				\centering
+%				\includegraphics[width=12cm]{dclases.png}
+%				\caption{Diagrama de Clases de la Aplicaci\'on ConcuShare}
+%			\end{figure}
+		
+			
+			
+		
+		
+
+				
+\end{document}
