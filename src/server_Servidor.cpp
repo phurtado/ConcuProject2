@@ -54,15 +54,17 @@ void Servidor::procesarMensaje(Mensaje & msj) {
 		default:
 			break;
 	}
+    // Los clientes esperan mensajes con mtype igual a su PID.
+    msj.mtype = msj.pid;
 }
 
 void Servidor::procesarConexion(Mensaje & msj) {
 	// Verifico que el cliente no esté conectado al servidor
-	if (this->buscarCliente(msj.mtype) == this->listaClientesOn->end()) {
+	if (this->buscarCliente(msj.pid) == this->listaClientesOn->end()) {
 		// El cliente no está conectado. Primero lo agrego  a la lista
-		this->listaClientesOn->push_front(msj.mtype);
+		this->listaClientesOn->push_front(msj.pid);
 		// Luego reescribo el mensaje
-		cout << "Cliente " << msj.mtype << ": Conexión exitosa" << endl;
+		cout << "Cliente " << msj.pid << ": Conexión exitosa" << endl;
 		msj.comando = CONOK;
 	} else {
 		// El cliente está conectado, no le puedo dar el alta. Envío un
@@ -73,13 +75,13 @@ void Servidor::procesarConexion(Mensaje & msj) {
 
 void Servidor::procesarDesconexion(Mensaje & msj) {
 	// Verifico que el cliente esté conectado al servidor
-	list<int>::iterator it = this->buscarCliente(msj.mtype);
+	list<int>::iterator it = this->buscarCliente(msj.pid);
 
 	if (it != this->listaClientesOn->end()) {
 		// Encontre al cliente, lo borro de la lista
 		this->listaClientesOn->erase(it);
 		// Reescribo el mensaje a enviarle al cliente
-		cout << "Cliente " << msj.mtype << ": Desconexión exitosa" << endl;
+		cout << "Cliente " << msj.pid << ": Desconexión exitosa" << endl;
 		msj.comando = DESCONOK;
 	}
 	else {
@@ -90,32 +92,32 @@ void Servidor::procesarDesconexion(Mensaje & msj) {
 
 void Servidor::procesarLectura(Mensaje & msj) {
 	// Primero verifico que el cliente esté conectado a la BD
-	if (this->buscarCliente(msj.mtype) != this->listaClientesOn->end()) {
+	if (this->buscarCliente(msj.pid) != this->listaClientesOn->end()) {
 		// Cliente válido. Leo el registro de la BD.
 		Registro reg;
 		if (this->bd->leerRegistro(reg, msj.numReg) == -1) {
 			// El número de registro no era válido
 			msj.comando = ERROR;
-			cout << "Cliente " << msj.mtype << ": Lectura fallida" << endl;
+			cout << "Cliente " << msj.pid << ": Lectura fallida" << endl;
 		}
 		else {
 			// Número de registro válido
 			msj.comando = LEERRGOK;
 			// Agrego el registro al mensaje
 			msj.reg = reg;
-			cout << "Cliente " << msj.mtype << ": Lectura exitosa" << endl;
+			cout << "Cliente " << msj.pid << ": Lectura exitosa" << endl;
 		}
 	}
 	else {
 		// El cliente no está conectado al servidor. Envío un mensaje de error.
-		cout << "Cliente " << msj.mtype << ": Cliente no conectado al servidor" << endl;
+		cout << "Cliente " << msj.pid << ": Cliente no conectado al servidor" << endl;
 		msj.comando = ERROR;
 	}
 }
 
 void Servidor::procesarAlta(Mensaje & msj) {
 	// Primero verifico que el cliente esté conectado a la BD
-	if (this->buscarCliente(msj.mtype) != this->listaClientesOn->end()) {
+	if (this->buscarCliente(msj.pid) != this->listaClientesOn->end()) {
 		// Cliente válido, agrego el registro a la BD
 
 		// TODO Dado que el registro viene con formato válido, se puede
@@ -123,57 +125,57 @@ void Servidor::procesarAlta(Mensaje & msj) {
 		// HIPOTESIS: La BD entra en la Memoria Compartida (ratificada por Julia)
 		this->bd->agregarRegistro(msj.reg);
 
-		cout << "Cliente " << msj.mtype << ": Alta exitosa" << endl;
+		cout << "Cliente " << msj.pid << ": Alta exitosa" << endl;
 		// Envío respuesta exitosa al cliente
 		msj.comando = ALTARGOK;
 	}
 	else {
 		// El cliente no está conectado al servidor. Le envío un mensaje de error.
-		cout << "Cliente " << msj.mtype << ": Cliente no conectado al servidor" << endl;
+		cout << "Cliente " << msj.pid << ": Cliente no conectado al servidor" << endl;
 		msj.comando = ERROR;
 	}
 }
 
 void Servidor::procesarMod(Mensaje & msj) {
 	// Primero verifico que el cliente esté conectado a la BD
-	if (this->buscarCliente(msj.mtype) != this->listaClientesOn->end()) {
+	if (this->buscarCliente(msj.pid) != this->listaClientesOn->end()) {
 		// Encontré al cliente, realizo la modificación
 		if (this->bd->modificarRegistro(msj.reg, msj.numReg) == -1) {
 			// El número de registro no es válido, retorno un mensaje de error.
-			cout << "Cliente " << msj.mtype << ": Modificación fallida" << endl;
+			cout << "Cliente " << msj.pid << ": Modificación fallida" << endl;
 			msj.comando = ERROR;
 		}
 		else {
 			// Se pudo realizar la modificación correctamente
-			cout << "Cliente " << msj.mtype << ": Modificación exitosa" << endl;
+			cout << "Cliente " << msj.pid << ": Modificación exitosa" << endl;
 			msj.comando = MODRGOK;
 		}
 	}
 	else {
 		// El cliente no está conectado al servidor. Le envío un mensaje de error.
-		cout << "Cliente " << msj.mtype << ": Cliente no se encuentra en el servidor" << endl;
+		cout << "Cliente " << msj.pid << ": Cliente no se encuentra en el servidor" << endl;
 		msj.comando = ERROR;
 	}
 }
 
 void Servidor::procesarBaja(Mensaje & msj) {
 	// Primero verifico que el cliente esté conectado a la BD
-	if (this->buscarCliente(msj.mtype) != this->listaClientesOn->end()) {
+	if (this->buscarCliente(msj.pid) != this->listaClientesOn->end()) {
 		// Encontré al cliente, realizo la modificación
 		if (this->bd->eliminarRegistro(msj.numReg) == -1) {
 			// El número de registro no es válido, retorno un mensaje de error.
-			cout << "Cliente " << msj.mtype << ": Baja fallida" << endl;
+			cout << "Cliente " << msj.pid << ": Baja fallida" << endl;
 			msj.comando = ERROR;
 		}
 		else {
 			// Se pudo realizar la modificación correctamente
-			cout << "Cliente " << msj.mtype << ": Baja exitosa" << endl;
+			cout << "Cliente " << msj.pid << ": Baja exitosa" << endl;
 			msj.comando = BAJARGOK;
 		}
 	}
 	else {
 		// El cliente no está conectado al servidor. Le envío un mensaje de error.
-		cout << "Cliente " << msj.mtype << ": Cliente no se encuentra en el servidor" << endl;
+		cout << "Cliente " << msj.pid << ": Cliente no se encuentra en el servidor" << endl;
 		msj.comando = ERROR;
 	}
 }

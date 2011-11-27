@@ -151,7 +151,8 @@ int Cliente::eliminarRegistro() {
 }
 
 void Cliente::crearMsj(Mensaje & msj, int pid, TCOM com) const {
-	msj.mtype = this->pid;
+	msj.mtype = 1;
+    msj.pid = this->pid;
 	msj.comando = com;
 }
 
