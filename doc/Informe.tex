@@ -22,7 +22,7 @@
 
 	\section{Introducci\'on}
 		El presente trabajo consiste en el desarrollo de una aplicaci\'on {\it concurrente}. El objetivo de la misma
-		es permitir el almacenamiento de datos centralizado y la posterior recuperaci\'on de los clientes. \\
+		es permitir el almacenamiento de datos centralizado y su posterior recuperaci\'on por parte de los clientes. \\
 		\indent Debido a que la materia apunta a obtener conocimientos sobre los mecanismos de concurrencia vistos hasta el momento en la c\'atedra, 
     el proyecto debe correr en una \'unica computadora y funcionar bajo un ambiente \emph{Unix/Linux} dado que los mecanismos vistos son los 
     implementados por \emph{System V}. \\
@@ -187,6 +187,125 @@
 						\item El servidor le responde con el resultado de la operaci\'on. 
 					\end{itemize}
 			\end{itemize}
+	\section{Protocolo de Comunicaci\'on}
+	A continuaci\'on se detalla el protocolo utiizado en la aplicaci\'on.
+	Para transmitir mensajes se utiliz\'o una estructura con los siguientes elementos:
+	\begin{itemize}
+		\item mtype: c\'odigo necesario por el mecanismo de comunicaci\'on para identificar el receptor del mensaje.	
+		\item pid: pid del cliente que env\'ia el mensaje al servidor.
+		\item numReg: n\'umero de registro de la base de datos por el cual se solicita una operaci\'on (lectura/modificaci\'on/eliminaci\'on).
+		\item reg: registro de la base de datos (en caso de querer agregar/modificar).
+	\end{itemize}	
+	Las acciones posibles y los valores para las mismas son: 
+	\begin{enumerate}
+		\item{\bf Conexi\'on}: Este comando se env\'ia autom\'aticamente cuando se abre un cliente.
+			\begin{itemize}
+				\item Cliente:
+				\begin{itemize}
+					\item[]mtype  = 1
+					\item[]pid  = pidCliente
+					\item[]comando  = CON
+					\item[]numReg  = indefinido
+					\item[]reg  = indefinido
+				\end{itemize}
+				\item Servidor:
+				\begin{itemize}
+					\item[]mtype = pidCliente 
+					\item[]pid = pidCLiente
+					\item[]comando = CONOK
+					\item[]numReg = indefinido
+					\item[]reg = indefinido
+				\end{itemize}
+			\end{itemize}
+		\item{\bf Desconexi\'on}: Este comando se env\'ia autom\'aticamente cuando se desea cerrar un cliente.
+			\begin{itemize}
+				\item Cliente:
+				\begin{itemize}
+					\item[]mtype = 1
+					\item[]pid = pidCliente
+					\item[]comando = DESCON 
+					\item[]numReg = indefinido
+					\item[]reg = indefinido
+				\end{itemize}
+				\item Servidor:
+				\begin{itemize}
+					\item[]mtype = pidCliente 
+					\item[]pid = pidCLiente
+					\item[]comando = DESCONOK 
+					\item[]numReg = indefinido
+					\item[]reg = indefinido
+				\end{itemize}
+			\end{itemize}
+		\item{\bf Lectura de un registro de la BD}: Comando ejecutado cuando se desea consultar un registro de la base de datos.
+			\begin{itemize}
+				\item Cliente:
+				\begin{itemize}
+					\item[]mtype = 1
+					\item[]pid = pidCliente
+					\item[]comando = LEERRG 
+					\item[]numReg = n\'umero de registro a leer
+					\item[]reg = indefinido
+				\end{itemize}
+				\item Servidor:
+				\begin{itemize}
+					\item[]mtype = pidCliente 
+					\item[]pid = pidCLiente
+					\item[]comando = LEERRGOK
+					\item[]numReg = indefinido
+					\item[]reg = registro leido
+				\end{itemize}
+			\end{itemize}
+
+		\item{\bf Modificaci\'on de un registro de la BD}: Comando ejecutado cuando se desea modificar un registro de la base de datos.
+			\begin{itemize}
+				\item Cliente:
+				\begin{itemize}
+					\item[]mtype = 1
+					\item[]pid = pidCliente
+					\item[]comando = MODRG 
+					\item[]numReg = n\'umero de registro a modificar
+					\item[]reg = registro a reemplazar
+				\end{itemize}
+				\item Servidor:
+				\begin{itemize}
+					\item[]mtype = pidCliente 
+					\item[]pid = pidCLiente
+					\item[]comando = MODREGOK
+					\item[]numReg = indefinido
+					\item[]reg = indefinido
+				\end{itemize}
+			\end{itemize}
+
+		\item{\bf Baja de un registro de la BD}: Comando ejecutado cuando se desea eliminar un registro de la base de datos.
+			\begin{itemize}
+				\item Cliente:
+				\begin{itemize}
+					\item[]mtype = 1
+					\item[]pid = pidCliente
+					\item[]comando = BAJARG 
+					\item[]numReg = n\'umero de registro a eliminar
+					\item[]reg = indefinido
+				\end{itemize}
+				\item Servidor:
+				\begin{itemize}
+					\item[]mtype = pidCliente 
+					\item[]pid = pidCLiente
+					\item[]comando = BAJARGOK
+					\item[]numReg = indefinido
+					\item[]reg = indefinido
+				\end{itemize}
+			\end{itemize}
+		\end{enumerate}
+	Al no concluir exitosamente una operaci\'on, el servidor responde con un mensaje de error, el cual se detalla a continuaci\'on: \\
+		Servidor:
+			\begin{itemize}
+				\item[]mtype = pidCliente 
+				\item[]pid = pidCLiente
+				\item[]comando = ERROR
+				\item[]numReg = indefinido
+				\item[]reg = indefinido
+			\end{itemize}
+
 
 %	\subsection{Problemas Conocidos de Concurrencia en el Trabajo}
 %	Respecto a las transferencias, se podr\'ia comparar con el 
