@@ -119,13 +119,11 @@ void Servidor::procesarAlta(Mensaje & msj) {
 	// Primero verifico que el cliente esté conectado a la BD
 	if (this->buscarCliente(msj.pid) != this->listaClientesOn->end()) {
 		// Cliente válido, agrego el registro a la BD
-
-		// TODO Dado que el registro viene con formato válido, se puede
-		// asumir que el alta siempre va a ser válida.
 		// HIPOTESIS: La BD entra en la Memoria Compartida (ratificada por Julia)
-		this->bd->agregarRegistro(msj.reg);
+		int pos = this->bd->agregarRegistro(msj.reg);
 
 		cout << "Cliente " << msj.pid << ": Alta exitosa" << endl;
+		msj.numReg = pos;
 		// Envío respuesta exitosa al cliente
 		msj.comando = ALTARGOK;
 	}

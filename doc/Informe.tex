@@ -56,9 +56,9 @@
 			con el usuario. La aplicaci\'on \emph{Cliente} despliega un men\'u con las tareas que puede realizar el mismo. A continuaci\'on se 
 			explica el modo de uso de cada una de las opciones del men\'u: 
 
-			\begin{itemize}
+			\begin{enumerate}
                                 
-                \item \textbf{1-Leer un Registro:} Mediante esta opci\'on, el cliente le indica al servidor qu\'e registro desea recuperar de la base de datos.
+                \item \textbf{Leer un Registro:} Mediante esta opci\'on, el cliente le indica al servidor qu\'e registro desea recuperar de la base de datos.
 
                 Precondici\'on: El servidor se encuentra corriendo. 
                 \begin{itemize}
@@ -75,7 +75,7 @@
                         \item El programa cliente muestra un mensaje de error y vuelve al men\'u de selecci\'on de operaci\'on.
 				    \end{itemize}
                 
-                \item \textbf{2-Agregar un registro a la Base de Datos:} Mediante esta opci\'on, el cliente le indica al servidor que desea agregar un registro. 
+                \item \textbf{Agregar un registro a la Base de Datos:} Mediante esta opci\'on, el cliente le indica al servidor que desea agregar un registro. 
                 Precondici\'on: El servidor se encuentra corriendo.
                 \begin{itemize}
 				\item El usuario solicita agregar un registro a la base de datos. 
@@ -101,7 +101,7 @@
 			\item El usuario debe ingresar el valor del campo hasta que la validaci\'on sea correcta.
                 \end{itemize}
                 
-                \item \textbf{3-Modificar un registro:} Mediante esta opci\'on, se permite la modificaci\'on de un registro de la base de datos. 
+                \item \textbf{Modificar un registro:} Mediante esta opci\'on, se permite la modificaci\'on de un registro de la base de datos. 
 				
                 \begin{itemize}
 			\item El usuario solicita la modificaci\'on de un registro. 
@@ -125,7 +125,7 @@
 			\item El usuario debe ingresar el valor del campo hasta que la validaci\'on sea correcta.
 			\end{itemize}
 		\end{itemize}
-                \item \textbf{4-Eliminar un registro de la Base de Datos:} Mediante esta opci\'on, el cliente puede eliminar un registro de la base de datos. 
+                \item \textbf{Eliminar un registro de la Base de Datos:} Mediante esta opci\'on, el cliente puede eliminar un registro de la base de datos. 
                    
                 Precondici\'on: El servidor se encuentra corriendo. 
 				
@@ -142,7 +142,7 @@
 			\item El cliente notifica el error al usuario.
 			\item El cliente regresa al men\'u principal.
 		\end{itemize}
-		\item \textbf{5-Salir de la Aplicaci\'on:} Mediante esta opci\'on, el cliente abandona la aplicaci\'on.
+		\item \textbf{Salir de la Aplicaci\'on:} Mediante esta opci\'on, el cliente abandona la aplicaci\'on.
 
                 Precondici\'on: El servidor se encuentra corriendo. 
                 
@@ -150,7 +150,7 @@
                     \item El usuario solicita salir del programa cliente.
                     \item Finaliza el programa cliente.
                 \end{itemize}
-			\end{itemize}
+			\end{enumerate}
 
 	\section{An\'alisis de la Soluci\'on}
 		\subsection{Divisi\'on de la Aplicaci\'on en Procesos}
@@ -253,6 +253,25 @@
 					comando = LEERRGOK
 					numReg = indefinido
 					reg = registro leido
+				\end{verbatim}
+			\end{itemize}
+		\item{\bf Alta de un registro de la BD}: Comando ejecutado cuando se desea agregar un registro de la base de datos.
+			\begin{itemize}
+				\item Cliente:
+				\begin{verbatim}
+					mtype = 1
+					pid = pidCliente
+					comando = ALTARG 
+					numReg = indefinido
+					reg = registro a dar de alta
+				\end{verbatim}
+				\item Servidor:
+				\begin{verbatim}
+					mtype = pidCliente 
+					pid = pidCLiente
+					comando = ALTARGOK
+					numReg = posicion del nuevo registro en la base de datos
+					reg = indefinido
 				\end{verbatim}
 			\end{itemize}
 

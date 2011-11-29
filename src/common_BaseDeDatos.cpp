@@ -88,13 +88,14 @@ int BaseDeDatos::leerRegistro(Registro & unReg, int numReg) {
 	}
 }
 
-void BaseDeDatos::agregarRegistro(Registro & unReg) {
+int BaseDeDatos::agregarRegistro(Registro & unReg) {
 	// Agrego el registro al final e incremento la cantidad
 	// de registros de la BD.
 	this->sharedMem->escribir(unReg, this->cantElementos);
 	this->cantRegistros++;
 	this->cantElementos++;
 	this->arrayMarcados = (int*) realloc (this->arrayMarcados, sizeof(int) * this->cantElementos);
+	return this->cantElementos;
 }
 
 int BaseDeDatos::modificarRegistro(Registro & unReg, int numReg) {

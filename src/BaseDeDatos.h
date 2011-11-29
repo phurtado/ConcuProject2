@@ -51,9 +51,9 @@ public:
 
 	/* Pre: El registro debe ser válido.
  	 * Post: Agrega un registro al final de la BD. Retorna
- 	 * 0 si se logro realizar la operación, -1 en caso contrario.
+ 	 * la posicion del registro en la BD.
  	 */
-	 void agregarRegistro(Registro & unReg);
+	 int agregarRegistro(Registro & unReg);
 
 	/* Pre: El registro debe ser válido.
 	 * Post: Se modifica un registro de la BD. Retorna

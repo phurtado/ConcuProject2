@@ -10,6 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+
+#define BUFSIZE 5
+
 using namespace std;
 
 class Cliente {
@@ -98,6 +101,19 @@ private:
 	 * Post: Devuelve un número de registro válido (mayor a 0).
 	 */
 	int obtenerNumReg() const;
+	
+	/* Pre: entrada es un string valido
+	 * Post: entrada contiene el mensaje ingresado por el usuario, 
+	 * sea cual sea su longitud. Retorna longitud de entrada (incluido el \0).
+	 */
+	int leerEntrada(std::string &entrada) const;
+	
+	/* Pre: tamCampo > 0
+	 * 		nombreCampo debe ser un string con un nombre de campo valido
+	 * 		campo debe ser un string que no contenga nada importante (se borrara su contenido)
+	 * Post: campo contendra el mensaje ingresado por el usuario cuya longitud sera menor a tamCampo.
+	 */
+	void obtenerCampo(size_t tamCampo, string nombreCampo, string &campo) const;
 };
 
 #endif

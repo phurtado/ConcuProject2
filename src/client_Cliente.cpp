@@ -88,7 +88,7 @@ int Cliente::agregarRegistro() {
 		return -1;
 	}
 	else if (msj.comando == ALTARGOK) {
-		cout << "El registro fue agregado correctamente" << endl;
+		cout << "El registro fue agregado correctamente en la posicion " << msj.numReg << endl;
 		return 0;
 	}
 	else {
@@ -171,63 +171,66 @@ void Cliente::crearMsj(Mensaje & msj, int pid, TCOM com, const Registro & reg, i
 	msj.numReg = numReg;
 }
 
-void Cliente::obtenerReg(Registro & reg) const {
-	char buffer[200];
+int Cliente::leerEntrada(string &entrada) const {
+	size_t i, size;
+	char buffer[BUFSIZE];
+	cin.clear();
+	cin >> entrada;
+	i = entrada.size();
+	while(i > 0) {
+		cin.get(buffer, BUFSIZE); // get no bloquea esperando una entrada del usuario
+		i = cin.gcount();
+		entrada.append(buffer, i);
+	}
+	// Reservo un espacio para el /0, de ahí el +1
+	size = entrada.size() + 1;
+	return size;
+}
+
+void Cliente::obtenerCampo(size_t tamCampo, string nombreCampo, string &campo) const {
 	size_t size;
 	bool cumpleCond;
+	campo = "";
+	do {
+		size = leerEntrada(campo);
+		cumpleCond = !(size > tamCampo);
+		if (cumpleCond == false) {
+			cout << nombreCampo << " ingresado muy largo, debe tener un maximo de " << tamCampo << 
+			" caracteres. Intente nuevamente." << endl;
+		}
+	} while(!cumpleCond);
+}
+
+void Cliente::obtenerReg(Registro & reg) const {
+	string entrada;
 	cout << "Creación del registro" << endl;
-
-	// TODO Copy-Paste innecesario, dsp modularizar
-	// TODO No me toma los espacios, dsp verlo
-
+	
 	// Pido primero el nombre
 	cout << "Ingrese un nombre" << endl;
-	do {
-		fscanf(stdin, "%s", buffer);
-		// Reservo un espacio para el /0, de ahí el +1
-		size = strlen(buffer)+1;
-		cumpleCond = !(size > sizeof(reg.nombre));
-		if (cumpleCond == false) {
-			cout << "El nombre ingresado es muy largo, ingrese un nombre "
-			"con menos caracteres" << endl;
-		}
-	} while(!cumpleCond);
-	strcpy(reg.nombre, buffer);
-
+	obtenerCampo(sizeof(reg.nombre), "Nombre", entrada);
+	strcpy(reg.nombre, entrada.c_str());
+	
 	// Luego pido la dirección
 	cout << "Ingrese una dirección" << endl;
-	do {
-		fscanf(stdin, "%s", buffer);
-		// Reservo un espacio para el \0, de ahí el +1
-		size = strlen(buffer)+1;
-		cumpleCond = !(size > sizeof(reg.dir));
-		if (cumpleCond == false) {
-			cout << "La dirección ingresado es muy largo, ingrese una dirección "
-			"con menos caracteres" << endl;
-		}
-	} while(!cumpleCond);
-	strcpy(reg.dir, buffer);
+	obtenerCampo(sizeof(reg.dir), "Direccion", entrada);
+	strcpy(reg.dir, entrada.c_str());
 
 	// Luego pido el teléfono
 	cout << "Ingrese un teléfono" << endl;
-	do {
-		fscanf(stdin, "%s", buffer);
-		// Reservo un espacio para el /0, de ahí el +1
-		size = strlen(buffer)+1;
-		cumpleCond = !(size > sizeof(reg.tel));
-		if (cumpleCond == false) {
-			cout << "El teléfono ingresado es muy largo, ingrese un teléfono "
-			"con menos caracteres" << endl;
-		}
-	} while(!cumpleCond);
-	strcpy(reg.tel, buffer);
+	obtenerCampo(sizeof(reg.tel), "Telefono", entrada);
+	strcpy(reg.tel, entrada.c_str());
 }
 
 int Cliente::obtenerNumReg() const {
-	cout << "Ingrese un número de registro a leer/modificar/eliminar de la BD" << endl;
 	char buffer[10];
-	fscanf(stdin, "%s", buffer);
-	// TODO validar que sea un número
-	int numReg = atoi(buffer);
+	int numReg = 0;
+	do{
+		cout << "Ingrese un número de registro a leer/modificar/eliminar de la BD" << endl;
+		fscanf(stdin, "%s", buffer);
+		numReg = atoi(buffer);
+		if(numReg <= 0)
+			cout << "A ingresado caracteres invalidos. Intente nuevamente" << endl;
+	}
+	while(numReg <= 0);
 	return numReg;
 }
