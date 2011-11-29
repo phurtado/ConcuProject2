@@ -58,7 +58,7 @@
 
 			\begin{itemize}
                                 
-                \item \textbf{1-Leer un Registro:} Mediante esta opci\'on, el cliente le indica al servidor qu/'e registro desea recuperar de la base de datos.
+                \item \textbf{1-Leer un Registro:} Mediante esta opci\'on, el cliente le indica al servidor qu\'e registro desea recuperar de la base de datos.
 
                 Precondici\'on: El servidor se encuentra corriendo. 
                 \begin{itemize}
@@ -201,110 +201,113 @@
 		\item{\bf Conexi\'on}: Este comando se env\'ia autom\'aticamente cuando se abre un cliente.
 			\begin{itemize}
 				\item Cliente:
-				\begin{itemize}
-					\item[]mtype  = 1
-					\item[]pid  = pidCliente
-					\item[]comando  = CON
-					\item[]numReg  = indefinido
-					\item[]reg  = indefinido
-				\end{itemize}
+				\begin{verbatim}
+					mtype  = 1
+					pid  = pidCliente
+					comando  = CON
+					numReg  = indefinido
+					reg  = indefinido
+				\end{verbatim}
 				\item Servidor:
-				\begin{itemize}
-					\item[]mtype = pidCliente 
-					\item[]pid = pidCLiente
-					\item[]comando = CONOK
-					\item[]numReg = indefinido
-					\item[]reg = indefinido
-				\end{itemize}
+				\begin{verbatim}
+					mtype = pidCliente 
+					pid = pidCLiente
+					comando = CONOK
+					numReg = indefinido
+					reg = indefinido
+				\end{verbatim}
 			\end{itemize}
 		\item{\bf Desconexi\'on}: Este comando se env\'ia autom\'aticamente cuando se desea cerrar un cliente.
 			\begin{itemize}
 				\item Cliente:
-				\begin{itemize}
-					\item[]mtype = 1
-					\item[]pid = pidCliente
-					\item[]comando = DESCON 
-					\item[]numReg = indefinido
-					\item[]reg = indefinido
-				\end{itemize}
+				\begin{verbatim}
+					mtype = 1
+					pid = pidCliente
+					comando = DESCON 
+					numReg = indefinido
+					reg = indefinido
+				\end{verbatim}
 				\item Servidor:
-				\begin{itemize}
-					\item[]mtype = pidCliente 
-					\item[]pid = pidCLiente
-					\item[]comando = DESCONOK 
-					\item[]numReg = indefinido
-					\item[]reg = indefinido
-				\end{itemize}
+				\begin{verbatim}
+					mtype = pidCliente 
+					pid = pidCLiente
+					comando = DESCONOK 
+					numReg = indefinido
+					reg = indefinido
+				\end{verbatim}
 			\end{itemize}
 		\item{\bf Lectura de un registro de la BD}: Comando ejecutado cuando se desea consultar un registro de la base de datos.
 			\begin{itemize}
 				\item Cliente:
-				\begin{itemize}
-					\item[]mtype = 1
-					\item[]pid = pidCliente
-					\item[]comando = LEERRG 
-					\item[]numReg = n\'umero de registro a leer
-					\item[]reg = indefinido
-				\end{itemize}
+				\begin{verbatim}
+					mtype = 1
+					pid = pidCliente
+					comando = LEERRG 
+					numReg = numero de registro a leer
+					reg = indefinido
+				\end{verbatim}
 				\item Servidor:
-				\begin{itemize}
-					\item[]mtype = pidCliente 
-					\item[]pid = pidCLiente
-					\item[]comando = LEERRGOK
-					\item[]numReg = indefinido
-					\item[]reg = registro leido
-				\end{itemize}
+				\begin{verbatim}
+					mtype = pidCliente 
+					pid = pidCLiente
+					comando = LEERRGOK
+					numReg = indefinido
+					reg = registro leido
+				\end{verbatim}
 			\end{itemize}
 
 		\item{\bf Modificaci\'on de un registro de la BD}: Comando ejecutado cuando se desea modificar un registro de la base de datos.
 			\begin{itemize}
 				\item Cliente:
-				\begin{itemize}
-					\item[]mtype = 1
-					\item[]pid = pidCliente
-					\item[]comando = MODRG 
-					\item[]numReg = n\'umero de registro a modificar
-					\item[]reg = registro a reemplazar
-				\end{itemize}
+				\begin{verbatim}
+					mtype = 1
+					pid = pidCliente
+					comando = MODRG 
+					numReg = numero de registro a modificar
+					reg = registro a reemplazar
+				\end{verbatim}
 				\item Servidor:
-				\begin{itemize}
-					\item[]mtype = pidCliente 
-					\item[]pid = pidCLiente
-					\item[]comando = MODREGOK
-					\item[]numReg = indefinido
-					\item[]reg = indefinido
-				\end{itemize}
+				\begin{verbatim}
+					mtype = pidCliente 
+					pid = pidCLiente
+					comando = MODREGOK
+					numReg = indefinido
+					reg = indefinido
+				\end{verbatim}
 			\end{itemize}
 
 		\item{\bf Baja de un registro de la BD}: Comando ejecutado cuando se desea eliminar un registro de la base de datos.
 			\begin{itemize}
 				\item Cliente:
-				\begin{itemize}
-					\item[]mtype = 1
-					\item[]pid = pidCliente
-					\item[]comando = BAJARG 
-					\item[]numReg = n\'umero de registro a eliminar
-					\item[]reg = indefinido
-				\end{itemize}
+				\begin{verbatim}
+					mtype = 1
+					pid = pidCliente
+					comando = BAJARG 
+					numReg = numero de registro a eliminar
+					reg = indefinido
+				\end{verbatim}
 				\item Servidor:
-				\begin{itemize}
-					\item[]mtype = pidCliente 
-					\item[]pid = pidCLiente
-					\item[]comando = BAJARGOK
-					\item[]numReg = indefinido
-					\item[]reg = indefinido
-				\end{itemize}
+				\begin{verbatim}
+					mtype = pidCliente 
+					pid = pidCLiente
+					comando = BAJARGOK
+					numReg = indefinido
+					reg = indefinido
+				\end{verbatim}
 			\end{itemize}
 		\end{enumerate}
-	Al no concluir exitosamente una operaci\'on, el servidor responde con un mensaje de error, el cual se detalla a continuaci\'on: \\
+
+
+	Al no concluir exitosamente una operaci\'on, el servidor responde con un mensaje de error, el cual se detalla a continuaci\'on:
+
 		Servidor:
-			\begin{itemize}
-				\item[]mtype = pidCliente 
-				\item[]pid = pidCLiente
-				\item[]comando = ERROR
-				\item[]numReg = indefinido
-				\item[]reg = indefinido
-			\end{itemize}
+			\begin{verbatim}
+				mtype = pidCliente 
+				pid = pidCLiente
+				comando = ERROR
+				numReg = indefinido
+				reg = indefinido
+			\end{verbatim}
 
 
 %	\subsection{Problemas Conocidos de Concurrencia en el Trabajo}
@@ -401,9 +404,23 @@
 %				\includegraphics[width=12cm]{dclases.png}
 %				\caption{Diagrama de Clases de la Aplicaci\'on ConcuShare}
 %			\end{figure}
-		
+
+\section{Diagramas de clases}
+\subsection{Gestor de Base de Datos (Servidor)}
+\begin{figure}[!htpb]
+    \centering
+    \includegraphics[width=12cm]{server.png}
+    \caption{Diagrama de clases del servidor}
+\end{figure}
+
+\newpage
+\subsection{Cliente}
 			
-			
+\begin{figure}[!htpb]
+    \centering
+    \includegraphics[width=12cm]{cliente.png}
+    \caption{Diagrama de clases del cliente}
+\end{figure}		
 		
 		
 
