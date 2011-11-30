@@ -1,4 +1,5 @@
 #include "Servidor.h"
+#include <signal.h>
 
 Servidor::Servidor() {
 	// Creo la Cola de Mensajes	 
@@ -22,7 +23,16 @@ void Servidor::escucharMensaje() {
 }
 
 Servidor::~Servidor() {
-	// TODO Desconecto a todos los clientes, mandandoles una signal.
+    list<int>::iterator it;
+	// Desconecto a todos los clientes, mandandoles una signal.
+    for(it = this->listaClientesOn->begin();it != this->listaClientesOn->end(); it++){
+        Mensaje msj;
+        msj.mtype = *it;
+        msj.pid = *it;
+        msj.comando = DESCONOK;
+        this->cola->escribir(msj);
+        kill(*it,SIGINT);
+    }
 	// Destruyo la cola
 	delete this->cola;
 	// Destruyo la BD

@@ -1,6 +1,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include "SIGINT_Handler.h"
+#include "SignalHandler.h"
 #include "Cliente.h"
 using namespace std;
 
@@ -15,7 +17,11 @@ int main() {
 	char buffer[100];
 	FILE* fd = fopen("MenuCliente.txt", "r");
 
-	while(sigue) {
+    // Registro handler de SIGINT
+    SIGINT_Handler sigint_handler;
+    SignalHandler::getInstance()->registrarHandler(SIGINT,&sigint_handler);
+
+	while(sigint_handler.getGracefulQuit() == 0 && sigue) {
 
 		// Primero imprimo el menú
 		fseek(fd, 0, SEEK_SET);
@@ -52,7 +58,6 @@ int main() {
 				break;
 			case 5:
 				// El cliente desea salir, pongo sigue en false
-				fclose(fd);
 				sigue = false;
 				break;
 			default:
@@ -60,6 +65,9 @@ int main() {
 				break;
 		}
 	}
+    SignalHandler::destruir();
+    cout<<"Cerrando el cliente."<<endl;
+    fclose(fd);
 	return 0;			
 }
 

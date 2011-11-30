@@ -18,8 +18,7 @@ Cliente::Cliente() {
 		cout << "Cliente conectado al servidor" << endl;
 	}
 	else {
-		// Esto no debería pasar, pero si pasa el Cliente se "debería"
-		// cerrar TODO
+		// Esto no debería pasar
 		cout << "Cliente no se pudo conectar al servidor" << endl;
 	}
 }
@@ -36,9 +35,8 @@ Cliente::~ Cliente() {
 		cout << "Cliente desconectado del servidor" << endl;
 	}
 	else {
-		// Esto no debería pasar, pero si pasa el Cliente se "debería"
-		// cerrar TODO
-		cout << "El cliente no se pudo desconectar del servidor" << endl;
+        // Si el cierre del cliente se da por cierre del server, no se recibirá la respuesta esperada.
+		cout << "Se ha perdido la conexión al servidor." << endl;
 	}
 }
 int Cliente::leerRegistro(Registro & reg) {

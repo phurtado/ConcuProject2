@@ -25,7 +25,8 @@ int main() {
 		servidor.escucharMensaje();
 	}
 
-	// Salí del while, se recibió SIGNIT. Cierro el servidor.
+	
+    // Salí del while, se recibió SIGINT. Cierro el servidor.
 	SignalHandler:: destruir();
 	cout << "Se cierra el servidor" << endl;
 	return 0;
